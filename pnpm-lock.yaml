@@ -11,6 +11,9 @@ importers:
       '@gtkx/cairo':
         specifier: 2.0.0-beta.10
         version: 2.0.0-beta.10
+      '@gtkx/components':
+        specifier: 2.0.0-beta.10
+        version: 2.0.0-beta.10(@types/node@26.6.2)(@types/react@19.3.0)(react@19.3.0)(yaml@2.9.1)
       '@gtkx/css':
         specifier: 2.0.0-beta.10
         version: 2.0.0-beta.10
@@ -301,6 +304,12 @@ packages:
   '@gtkx/codegen@2.0.0-beta.10':
     resolution: {integrity: sha512-10knatox7+rYxs3arhVjjNMRnFUr+ql918yqW+MId0bmo0ObmIEfqu8ukIxN+2ZOa90Jmf+DXYJbFFd++RN8Nw==}
     engines: {node: '>=26.7.0'}
+
+  '@gtkx/components@2.0.0-beta.10':
+    resolution: {integrity: sha512-7kDpa9f/GBMdYm4tLK3qHG/D77zdC19uy01KA5W10ca4/n0+WCDR59Ar0dQGWUPZ8TY851bROJqcEf/yHodG1A==}
+    engines: {node: '>=26.7.0'}
+    peerDependencies:
+      react: ^19.2
 
   '@gtkx/config@2.0.0-beta.10':
     resolution: {integrity: sha512-96SA15Y74jOfxwDLR0T1JHmvKIYmjcijLmQhxaESpWI4NrxziXHHww6d41i/krKIdcAOHV1/QUJQ48P9uuRjHA==}
@@ -2239,6 +2248,27 @@ snapshots:
       - less
       - magicast
       - react
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
+
+  '@gtkx/components@2.0.0-beta.10(@types/node@26.6.2)(@types/react@19.3.0)(react@19.3.0)(yaml@2.9.1)':
+    dependencies:
+      '@gtkx/react': 2.0.0-beta.10(@types/node@26.6.2)(@types/react@19.3.0)(react@19.3.0)(yaml@2.9.1)
+      '@gtkx/runtime': 2.0.0-beta.10
+      '@gtkx/utils': 2.0.0-beta.10
+      react: 19.3.0
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@types/react'
+      - '@vitejs/devtools'
+      - esbuild
+      - less
+      - magicast
       - sass
       - sass-embedded
       - stylus

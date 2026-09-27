@@ -2,29 +2,38 @@ import * as Gtk from '@gtkx/gi/gtk'
 import { AdwSidebar, AdwSidebarItem, AdwSidebarSection, AdwStatusPage } from '@gtkx/jsx/adw'
 import { GtkBox, GtkButton, GtkLabel } from '@gtkx/jsx/gtk'
 import { createSplitViewNavigator, type SplitViewScreenProps } from '@gtkx/navigation'
+import { BannerDemo } from '@/demos/BannerDemo.js'
+import { Welcome } from '@/demos/Welcome.js'
 import { pascalCase } from '@/utils/format.js'
 
-type MailParams = { Folders: undefined; Messages: { folder: string }; Message: { id: string } }
+type RouteParams = {
+  Sidebar: undefined
+  Banner: undefined
+  Welcome: undefined
+  Messages: { folder: string }
+  Message: { id: string }
+}
 
-const Split = createSplitViewNavigator<MailParams>()
+const Split = createSplitViewNavigator<RouteParams>()
 
-const Folders = ({ navigation }: SplitViewScreenProps<MailParams, 'Folders'>) => (
+const Sidebar = ({ navigation }: SplitViewScreenProps<RouteParams, 'Sidebar'>) => (
   <AdwSidebar
     cssClasses={['navigation-sidebar']}
     onActivated={(index, self) => {
       const item = self.getItem(index)
-      console.log(pascalCase(item?.getTitle() as string))
+      const routeName = pascalCase(item?.getTitle() as string)
+      navigation.navigate(routeName)
     }}
   >
     <AdwSidebarSection>
       <AdwSidebarItem iconName="welcome-symbolic" title="Welcome" key="welcome" />
     </AdwSidebarSection>
     <AdwSidebarSection title="Navigation">
-      <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" name="navigation-view" />
-      <AdwSidebarItem iconName="adw-sidebar-symbolic" title="Split Views" />
+      <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" />
+      <AdwSidebarItem iconName="widget-split-views-symbolic" title="Split Views" />
       <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" />
       <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" />
-      <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheed" />
+      <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheet" />
       <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" />
     </AdwSidebarSection>
     <AdwSidebarSection title="Controls">
@@ -54,7 +63,7 @@ const Folders = ({ navigation }: SplitViewScreenProps<MailParams, 'Folders'>) =>
   </AdwSidebar>
 )
 
-const Messages = ({ route, navigation }: SplitViewScreenProps<MailParams, 'Messages'>) => (
+const Messages = ({ route, navigation }: SplitViewScreenProps<RouteParams, 'Messages'>) => (
   <GtkBox orientation={Gtk.Orientation.VERTICAL}>
     <GtkLabel>{`Messages in ${route.params.folder}`}</GtkLabel>
     <GtkButton
@@ -72,25 +81,30 @@ const Messages = ({ route, navigation }: SplitViewScreenProps<MailParams, 'Messa
   </GtkBox>
 )
 
-const Message = ({ route }: SplitViewScreenProps<MailParams, 'Message'>) => (
+const Message = ({ route }: SplitViewScreenProps<RouteParams, 'Message'>) => (
   <GtkLabel>{`Message ${route.params.id}`}</GtkLabel>
 )
 
-export const Mail = ({ isNarrow }: { isNarrow: boolean }) => (
+export const Navigation = ({ isNarrow }: { isNarrow: boolean }) => (
   <Split.Navigator
-    collapsed={isNarrow}
     minSidebarWidth={220}
     maxSidebarWidth={300}
     sidebarWidthFraction={0.25}
+    initialRouteName="Welcome"
     contentPlaceholder={
       <AdwStatusPage
-        iconName="welcome-symbolic"
+        iconName="circle-crossed-symbolic"
         title="Welcome to Adwaita Demo"
         description="This is a tour of the features the library has to offer."
-      />
+      >
+        <GtkButton label="Test" halign={Gtk.Align.CENTER} />
+      </AdwStatusPage>
     }
   >
-    <Split.Screen name="Folders" component={Folders} options={{ title: 'GTKX Adwaita Demo' }} />
+    <Split.Screen name="Sidebar" component={Sidebar} options={{ title: 'GTKX Adwaita Demo' }} />
+    <Split.Screen name="Banner" component={BannerDemo} />
+    <Split.Screen name="Welcome" component={Welcome} />
+
     <Split.Screen name="Messages" component={Messages} options={({ route }) => ({ title: route.params.folder })} />
     <Split.Screen name="Message" component={Message} options={{ headerEnd: <GtkButton label="Reply" /> }} />
   </Split.Navigator>

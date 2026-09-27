@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@gtkx/cairo": "2.0.0-beta.10",
+        "@gtkx/components": "2.0.0-beta.10",
         "@gtkx/css": "2.0.0-beta.10",
         "@gtkx/navigation": "2.0.0-beta.10",
         "@gtkx/react": "2.0.0-beta.10",
