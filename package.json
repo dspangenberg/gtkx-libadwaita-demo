@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "description": "A GNOME application built with GTKX",
-    "license": "MIT",
+    "license": "LGPL-2.1-only",
     "author": "Danny Spangenberg <danny.spangenberg@twiceware.de>",
     "type": "module",
     "engines": {
