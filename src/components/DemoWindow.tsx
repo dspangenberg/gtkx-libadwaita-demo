@@ -1,7 +1,8 @@
 import { AdwSidebar, AdwSidebarItem, AdwSidebarSection } from '@gtkx/jsx/adw'
 import { createSplitViewNavigator, type SplitViewScreenProps } from '@gtkx/navigation'
-import { BannerDemo } from '@/demos/BannerDemo.js'
 import { AvatarDemo } from '@/demos/AvatarDemo.js'
+import { BannerDemo } from '@/demos/BannerDemo.js'
+import { CarouselDemo } from '@/demos/CarouselDemo.js'
 import { SpinnerDemo } from '@/demos/SpinnerDemo.js'
 import { ToastDemo } from '@/demos/ToastDemo.js'
 import { Welcome } from '@/demos/Welcome.js'
@@ -42,7 +43,7 @@ const Sidebar = ({ navigation }: SplitViewScreenProps<RouteParams, 'Sidebar'>) =
       <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" enabled={false} />
       <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" enabled={false} />
       <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheet" enabled={false} />
-      <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" enabled={false} />
+      <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" />
     </AdwSidebarSection>
     <AdwSidebarSection title="Controls">
       <AdwSidebarItem iconName="widget-list-symbolic" title="Boxed List" enabled={false} />
@@ -77,6 +78,7 @@ export const Navigation = () => (
 
     <Split.Screen name="Avatar" component={AvatarDemo} />
     <Split.Screen name="Banner" component={BannerDemo} />
+    <Split.Screen name="Carousel" component={CarouselDemo} />
     <Split.Screen name="Spinner" component={SpinnerDemo} />
     <Split.Screen name="Toasts" component={ToastDemo} />
     <Split.Screen name="Welcome" component={Welcome} />

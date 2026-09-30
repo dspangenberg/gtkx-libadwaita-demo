@@ -1,17 +1,6 @@
-import { useToast } from '@gtkx/components'
-import * as Adw from '@gtkx/gi/adw'
 import * as Gtk from '@gtkx/gi/gtk'
-import {
-  AdwAvatar,
-  AdwBanner,
-  AdwClamp,
-  AdwEntryRow,
-  AdwActionRow,
-  AdwPreferencesGroup,
-  AdwStatusPage,
-  AdwSwitchRow
-} from '@gtkx/jsx/adw'
-import { GtkBox, GtkSwitch, GtkLabel, GtkListBoxRow, GtkListBox } from '@gtkx/jsx/gtk'
+import { AdwActionRow, AdwAvatar, AdwClamp, AdwEntryRow, AdwPreferencesGroup, AdwSwitchRow } from '@gtkx/jsx/adw'
+import { GtkBox, GtkLabel, GtkListBox, GtkScrolledWindow, GtkSwitch } from '@gtkx/jsx/gtk'
 import { useState } from 'react'
 
 const firstNames = [
@@ -71,38 +60,33 @@ const fullNames = buildFullNames()
 const mainAvatar = fullNames[0]
 const otherAvatars = fullNames.slice(1)
 
-console.log('**', mainAvatar)
-
 export const AvatarDemo = () => {
-  const { show } = useToast()
-
-  const [showBanner, setShowBanner] = useState(true)
   const [showButton, setShowButton] = useState(true)
   const [title, setTitle] = useState('Metered connection — updates paused')
   const [buttonLabel, setButtonLabel] = useState('_Network Settings')
   const [suggested, setSuggested] = useState(false)
 
   return (
-    <GtkBox orientation={Gtk.Orientation.VERTICAL} spacing={8}>
-      <AdwAvatar
-        text={mainAvatar}
-        showInitials={true}
-        size={128}
-      />
-      <AdwStatusPage
-        title="Avatar"
-        description="A user avatar with generated fallback."
-        vexpand
-      >
-
-
-        <AdwClamp maximumSize={400} tighteningThreshold={300}>
-          <AdwPreferencesGroup>
-            <AdwSwitchRow
-              title="Show banner"
-              active={showBanner}
-              onNotifyActive={active => setShowBanner(active ?? false)}
+    <GtkScrolledWindow vexpand>
+      <AdwClamp maximumSize={400} tighteningThreshold={300}>
+        <GtkBox
+          orientation={Gtk.Orientation.VERTICAL}
+          spacing={24}
+          valign={Gtk.Align.CENTER}
+          marginTop={24}
+          marginBottom={24}
+        >
+          <GtkBox orientation={Gtk.Orientation.VERTICAL}>
+            <AdwAvatar text={mainAvatar} showInitials={true} size={128} marginBottom={36} />
+            <GtkLabel label="Avatar" cssClasses={['title', 'title-1']} />
+            <GtkLabel
+              label="A user avatar with generated fallback"
+              cssClasses={['body', 'description']}
+              marginTop={12}
             />
+          </GtkBox>
+
+          <AdwPreferencesGroup>
             <AdwEntryRow
               title="Title"
               text={title}
@@ -130,27 +114,19 @@ export const AvatarDemo = () => {
             />
           </AdwPreferencesGroup>
 
-          <AdwPreferencesGroup>
+          <GtkListBox cssClasses={['boxed-list']}>
             {otherAvatars.map(item => {
-              return <AdwActionRow
-                key={item}
-                title={item}
-                prefix={
-                  <AdwAvatar
-                    text={item}
-                    showInitials={true}
-
-
-                    size={40}
-                  />}
-              />
+              return (
+                <AdwActionRow
+                  key={item}
+                  title={item}
+                  prefix={<AdwAvatar text={item} showInitials={true} size={40} />}
+                />
+              )
             })}
-
-          </AdwPreferencesGroup>
-
-
-        </AdwClamp>
-      </AdwStatusPage>
-    </GtkBox>
+          </GtkListBox>
+        </GtkBox>
+      </AdwClamp>
+    </GtkScrolledWindow>
   )
 }
