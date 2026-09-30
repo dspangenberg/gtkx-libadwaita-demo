@@ -17,29 +17,19 @@ import { useState } from 'react'
 
 const indicatorNames = ['Dots', 'Lines']
 
-let orientationType: bigint | null = null
-let orientationExpression: Gtk.Expression | null = null
-
-const getOrientationType = () => {
-  orientationType ??= typeFromName('GtkOrientation')
-  orientationExpression ??= Gtk.PropertyExpression.new(Adw.EnumListItem, null, 'nick')
-
-  return orientationType
-}
-
-const getOrientationExpression = () => {
-  getOrientationType()
-
-  return orientationExpression
-}
+const flip = (orientation: Gtk.Orientation) =>
+  orientation === Gtk.Orientation.HORIZONTAL ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
 
 export const CarouselDemo = () => {
   const [carousel, setCarousel] = useState<Adw.Carousel | null>(null)
-  const [page, setPage] = useState(0)
   const [orientation, setOrientation] = useState(Gtk.Orientation.HORIZONTAL)
   const [indicator, setIndicator] = useState(0)
   const [scrollWheel, setScrollWheel] = useState(true)
   const [longSwipes, setLongSwipes] = useState(false)
+
+  // GObjects erst nach Gtk.init() erzeugen, aber über Renders hinweg stabil halten.
+  const [orientationType] = useState(() => typeFromName('GtkOrientation'))
+  const [orientationLabel] = useState(() => Gtk.PropertyExpression.new(Adw.EnumListItem, null, 'nick'))
 
   const scrollToPage = (index: number) => {
     if (carousel === null || index < 0 || index >= 3) {
@@ -50,11 +40,7 @@ export const CarouselDemo = () => {
   }
 
   return (
-    <GtkBox
-      orientation={orientation === Gtk.Orientation.HORIZONTAL ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL}
-      vexpand
-      marginBottom={24}
-    >
+    <GtkBox orientation={flip(orientation)} vexpand marginBottom={24}>
       <AdwCarousel
         ref={setCarousel}
         vexpand
@@ -63,7 +49,6 @@ export const CarouselDemo = () => {
         allowLongSwipes={longSwipes}
         revealDuration={300}
         allowScrollWheel={scrollWheel}
-        onPageChanged={index => setPage(index < 0 ? 0 : index)}
       >
         <AdwStatusPage
           iconName="widget-carousel-symbolic"
@@ -83,8 +68,8 @@ export const CarouselDemo = () => {
           <AdwPreferencesGroup>
             <AdwComboRow
               title="Orientation"
-              model={<AdwEnumListModel enumType={getOrientationType()} />}
-              expression={getOrientationExpression()}
+              model={<AdwEnumListModel enumType={orientationType} />}
+              expression={orientationLabel}
               selected={orientation}
               onNotifySelected={value => setOrientation(value ?? Gtk.Orientation.HORIZONTAL)}
             />
