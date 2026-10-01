@@ -31,7 +31,7 @@
   <path
           id='path3'
           fill='none'
-          stroke='url(#gpa:foreground) rgb(0,0,0)'
+          stroke="rgb(0,0,0)"
           stroke-width='2'
           stroke-linecap='round'
           stroke-linejoin='round'
@@ -39,22 +39,26 @@
           gpa:stroke-minwidth='25%'
           gpa:stroke-maxwidth='150%'
           gpa:stroke='foreground'
-          gpa:states='outline'>
+          gpa:states='outline'
+          class='transparent-fill foreground-stroke'
+        >
   </path>
   <path
           id='path4'
-          fill='url(#gpa:foreground) rgb(0,0,0)'
+          fill="rgb(0,0,0)"
           fill-opacity='0.2'
           fill-rule='nonzero'
           stroke='none'
           d='M 9.5 2 L 9.5 14 L 13 14 C 14.1046 14, 15 13.1046, 15 12 L 15 4 C 15 2.89543, 14.1046 2, 13 2 Z'
           gpa:fill='foreground'
-          gpa:states='outline'>
+          gpa:states='outline'
+          class='foreground-fill'
+        >
   </path>
   <path
           id='path5'
           fill='none'
-          stroke='url(#gpa:foreground) rgb(0,0,0)'
+          stroke="rgb(0,0,0)"
           stroke-width='1'
           stroke-linecap='butt'
           stroke-linejoin='round'
@@ -62,6 +66,8 @@
           gpa:stroke-minwidth='25%'
           gpa:stroke-maxwidth='200%'
           gpa:stroke='foreground'
-          gpa:states='outline'>
+          gpa:states='outline'
+          class='transparent-fill foreground-stroke'
+        >
   </path>
 </svg>

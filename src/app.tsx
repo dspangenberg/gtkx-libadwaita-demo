@@ -8,6 +8,7 @@ import { quit } from '@gtkx/react'
 import { useRef, useState } from 'react'
 import { Navigation } from './components/DemoWindow.js'
 import { ToastOverlayRefProvider } from './components/ToastOverlayContext.js'
+import { TabViewActions } from './demos/TabViewDemo/TabViewActions.js'
 
 const MainWindow = () => {
   const [count, setCount] = useState(0)
@@ -16,7 +17,13 @@ const MainWindow = () => {
   return (
     <ToastProvider overlayRef={toastOverlayRef}>
       <ToastOverlayRefProvider overlayRef={toastOverlayRef}>
-        <AdwApplicationWindow title={'GTKX Adwaita Demo'} defaultWidth={1000} defaultHeight={720} onCloseRequest={quit}>
+        <AdwApplicationWindow
+          title={'GTKX Adwaita Demo'}
+          defaultWidth={1000}
+          defaultHeight={720}
+          onCloseRequest={quit}
+          actions={<TabViewActions />}
+        >
           <AdwToastOverlay ref={toastOverlayRef}>
             <NavigationContainer>
               <Navigation isNarrow={false} />

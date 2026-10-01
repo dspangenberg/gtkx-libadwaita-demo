@@ -4,7 +4,10 @@ import { AvatarDemo } from '@/demos/AvatarDemo.js'
 import { BannerDemo } from '@/demos/BannerDemo.js'
 import { BottomSheetDemo } from '@/demos/BottomSheetDemo.js'
 import { CarouselDemo } from '@/demos/CarouselDemo.js'
+import { NavigationViewDemoPage } from '@/demos/NavigationViewDemo/NavigationViewDemoPage.js'
 import { SpinnerDemo } from '@/demos/SpinnerDemo.js'
+import { SplitViewsDemoPage } from '@/demos/SplitViewsDemo/SplitViewsDemoPage.js'
+import { TabViewDemoPage } from '@/demos/TabViewDemo/TabViewDemoPage.js'
 import { ToastDemo } from '@/demos/ToastDemo.js'
 import { Welcome } from '@/demos/Welcome.js'
 import { pascalCase } from '@/utils/format.js'
@@ -39,10 +42,10 @@ const Sidebar = ({ navigation }: SplitViewScreenProps<RouteParams, 'Sidebar'>) =
       <AdwSidebarItem iconName="welcome-symbolic" title="Welcome" key="welcome" />
     </AdwSidebarSection>
     <AdwSidebarSection title="Navigation">
-      <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" enabled={false} />
-      <AdwSidebarItem iconName="widget-split-views-symbolic" title="Split Views" enabled={false} />
+      <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" />
+      <AdwSidebarItem iconName="widget-split-views-symbolic" title="Split Views" />
       <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" enabled={false} />
-      <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" enabled={false} />
+      <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" />
       <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheet" />
       <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" />
     </AdwSidebarSection>
@@ -77,12 +80,19 @@ export const Navigation = () => (
   <Split.Navigator minSidebarWidth={220} maxSidebarWidth={300} sidebarWidthFraction={0.25} initialRouteName="Welcome">
     <Split.Screen name="Sidebar" component={Sidebar} options={{ title: 'GTKX Adwaita Demo' }} />
 
-    <Split.Screen name="Avatar" component={AvatarDemo} />
-    <Split.Screen name="Banner" component={BannerDemo} />
-    <Split.Screen name="BottomSheet" component={BottomSheetDemo} />
-    <Split.Screen name="Carousel" component={CarouselDemo} />
-    <Split.Screen name="Spinner" component={SpinnerDemo} />
-    <Split.Screen name="Toasts" component={ToastDemo} />
-    <Split.Screen name="Welcome" component={Welcome} />
+    <Split.Screen name="Avatar" component={AvatarDemo} options={{ headerBackVisible: false }} />
+    <Split.Screen name="Banner" component={BannerDemo} options={{ headerBackVisible: false }} />
+    <Split.Screen name="BottomSheet" component={BottomSheetDemo} options={{ headerShown: false }} />
+    <Split.Screen name="Carousel" component={CarouselDemo} options={{ headerBackVisible: false }} />
+    <Split.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ headerBackVisible: false }} />
+
+    <Split.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ headerBackVisible: false }} />
+    <Split.Screen
+      name="TabView"
+      component={TabViewDemoPage}
+      options={{ headerBackVisible: false, headerShown: false }}
+    />
+    <Split.Screen name="Toasts" component={ToastDemo} options={{ headerBackVisible: false }} />
+    <Split.Screen name="Welcome" component={Welcome} options={{ headerBackVisible: false, title: undefined }} />
   </Split.Navigator>
 )
