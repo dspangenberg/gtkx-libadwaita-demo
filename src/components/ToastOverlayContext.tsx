@@ -5,7 +5,7 @@ const ToastOverlayContext = createContext<RefObject<Adw.ToastOverlay | null> | n
 
 /**
  * Shares the toast overlay reference with descendants that need `Adw.ToastOverlay.addToast()`
- * directly, which `useToast` and `useToastOverlay` do not expose. Re-adding a displayed toast
+ * directly, which `useToast` does not expose. Re-adding a displayed toast
  * resets its timeout.
  */
 export const ToastOverlayRefProvider = ({

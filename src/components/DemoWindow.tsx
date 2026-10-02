@@ -9,6 +9,7 @@ import { SpinnerDemo } from '@/demos/SpinnerDemo.js'
 import { SplitViewsDemoPage } from '@/demos/SplitViewsDemo/SplitViewsDemoPage.js'
 import { TabViewDemoPage } from '@/demos/TabViewDemo/TabViewDemoPage.js'
 import { ToastDemo } from '@/demos/ToastDemo.js'
+import { ViewSwitcherDemoPage } from '@/demos/ViewSwitcherDemo/ViewSwitcherDemoPage.js'
 import { Welcome } from '@/demos/Welcome.js'
 import { pascalCase } from '@/utils/format.js'
 
@@ -44,7 +45,7 @@ const Sidebar = ({ navigation }: SplitViewScreenProps<RouteParams, 'Sidebar'>) =
     <AdwSidebarSection title="Navigation">
       <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" />
       <AdwSidebarItem iconName="widget-split-views-symbolic" title="Split Views" />
-      <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" enabled={false} />
+      <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" />
       <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" />
       <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheet" />
       <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" />
@@ -87,12 +88,14 @@ export const Navigation = () => (
     <Split.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ headerBackVisible: false }} />
 
     <Split.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ headerBackVisible: false }} />
+    <Split.Screen name="Spinner" component={SpinnerDemo} options={{ headerBackVisible: false }} />
     <Split.Screen
       name="TabView"
       component={TabViewDemoPage}
       options={{ headerBackVisible: false, headerShown: false }}
     />
     <Split.Screen name="Toasts" component={ToastDemo} options={{ headerBackVisible: false }} />
+    <Split.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} options={{ headerBackVisible: false }} />
     <Split.Screen name="Welcome" component={Welcome} options={{ headerBackVisible: false, title: undefined }} />
   </Split.Navigator>
 )

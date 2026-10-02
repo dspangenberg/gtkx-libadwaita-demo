@@ -1,4 +1,4 @@
-import { useToast, useToastOverlay } from '@gtkx/components'
+import { useToast } from '@gtkx/components'
 import type * as Adw from '@gtkx/gi/adw'
 import * as Gtk from '@gtkx/gi/gtk'
 import { AdwActionRow, AdwClamp, AdwPreferencesGroup, AdwStatusPage } from '@gtkx/jsx/adw'
@@ -7,8 +7,7 @@ import { useRef, useState } from 'react'
 import { useToastOverlayRef } from '@/components/ToastOverlayContext.js'
 
 export const ToastDemo = () => {
-  const { show, dismiss } = useToast()
-  const { dismissAll } = useToastOverlay()
+  const { show, dismissAll } = useToast()
   const overlayRef = useToastOverlayRef()
   const [visibleToast, setVisibleToast] = useState<Adw.Toast | null>(null)
   const toastCountRef = useRef(0)
@@ -22,6 +21,9 @@ export const ToastDemo = () => {
       const nextCount = toastCountRef.current + 1
       toastCountRef.current = nextCount
       visibleToast.title = `${nextCount} item${nextCount === 1 ? '' : 's'} deleted`
+      // Updating the title is not enough: the toast keeps its original timeout and would
+      // disappear on schedule. Re-adding the same, currently displayed toast makes the
+      // overlay reset that timeout instead of queueing it again.
       overlayRef.current?.addToast(visibleToast)
       return
     }
@@ -77,7 +79,7 @@ export const ToastDemo = () => {
                     sensitive={visibleToast !== null}
                     onClicked={() => {
                       if (visibleToast !== null) {
-                        dismiss(visibleToast)
+                        visibleToast.dismiss()
                       }
                     }}
                   />

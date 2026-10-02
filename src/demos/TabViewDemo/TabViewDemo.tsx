@@ -62,12 +62,17 @@ type Props = {
   onClosed: () => void
 }
 
+type PageRef = {
+  page: Adw.TabPage
+  content: Adw.Bin
+  entry: Gtk.Entry
+}
+
 export default function TabViewDemo({ isOpen, onClosed }: Props) {
   const { tabs, overviewOpen } = useTabViewState()
   const [isNarrow, setIsNarrow] = useState(false)
   const [tabView, setTabView] = useState<Adw.TabView | null>(null)
-  const pages = useRef(new Map<number, Adw.TabPage>())
-  const contents = useRef(new Map<number, Adw.Bin>())
+  const refs = useRef(new Map<number, PageRef>())
 
   const createPage = useCallback(
     (tab: DemoTab): Adw.TabPage | null => {
@@ -77,19 +82,22 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
       entry.halign = Gtk.Align.CENTER
       entry.valign = Gtk.Align.CENTER
       entry.text = tab.title
-      entry.on('changed', () => tabStore.setTitle(tab.id, entry.text))
 
       const content = new Adw.Bin({
         child: entry,
         cssClasses: cx(tabPage, tabPageColors[tab.color - 1])
       })
-      contents.current.set(tab.id, content)
 
       const page = tabView.append(content)
-      page.on('notify::selected', () => {
+      const onChanged = () => tabStore.setTitle(tab.id, entry.text)
+      const onSelected = () => {
         if (page.selected) tabStore.select(tab.id)
-      })
-      pages.current.set(tab.id, page)
+      }
+      entry.on('changed', onChanged)
+      page.on('notify::selected', onSelected)
+
+      // Keep the wrappers alive: otherwise GJS collects them while GTK still owns the widgets.
+      refs.current.set(tab.id, { page, content, entry })
       return page
     },
     [tabView]
@@ -97,15 +105,19 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
 
   const idOfPage = useCallback((page: Adw.TabPage | null) => {
     if (!page) return null
-    for (const [id, candidate] of pages.current) if (candidate === page) return id
+    for (const [id, ref] of refs.current) if (ref.page === page) return id
     return null
   }, [])
 
+  const releasePage = useCallback((id: number) => {
+    refs.current.delete(id)
+  }, [])
+
   useEffect(() => {
-    if (!tabView) return
+    if (!isOpen || !tabView) return
 
     for (const tab of tabs) {
-      const page = pages.current.get(tab.id) ?? createPage(tab)
+      const page = refs.current.get(tab.id)?.page ?? createPage(tab)
       if (!page) continue
 
       page.setTitle(tab.title)
@@ -125,7 +137,7 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
 
       tabView.setPagePinned(page, tab.pinned)
 
-      const content = contents.current.get(tab.id)
+      const content = refs.current.get(tab.id)?.content
       if (content) {
         const colorClass = tabPageColors[tab.color - 1]
         const previous = tabPageColors.find((name: string) => content.hasCssClass(name))
@@ -136,13 +148,21 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
       }
     }
 
-    for (const [id, page] of pages.current) {
+    for (const [id, ref] of refs.current) {
       if (tabs.find(tab => tab.id === id)) continue
-      tabView.closePage(page)
-      pages.current.delete(id)
-      contents.current.delete(id)
+      tabView.closePage(ref.page)
+      releasePage(id)
     }
-  }, [tabView, tabs, createPage])
+  }, [isOpen, tabView, tabs, createPage, releasePage])
+
+  // The pages die with the dialog when it closes. Without this, refs.current keeps the
+  // wrappers of destroyed widgets around and the next sync pass writes to dead objects.
+  useEffect(() => {
+    if (!isOpen) refs.current.clear()
+    return () => {
+      refs.current.clear()
+    }
+  }, [isOpen])
 
   const menuModel = useMemo(buildMenu, [])
 
@@ -201,14 +221,11 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
             ref={setTabView}
             menuModel={menuModel}
             onSetupMenu={page => tabStore.setMenuPage(idOfPage(page))}
-            onClosePage={page => {
+            onPageDetached={page => {
               const id = idOfPage(page)
-              if (id !== null) {
-                pages.current.delete(id)
-                contents.current.delete(id)
-                tabStore.close(id)
-              }
-              return false
+              if (id === null) return
+              releasePage(id)
+              queueMicrotask(() => tabStore.close(id))
             }}
             onIndicatorActivated={page => {
               const id = idOfPage(page)

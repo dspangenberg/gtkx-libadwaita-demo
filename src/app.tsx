@@ -26,7 +26,7 @@ const MainWindow = () => {
         >
           <AdwToastOverlay ref={toastOverlayRef}>
             <NavigationContainer>
-              <Navigation isNarrow={false} />
+              <Navigation />
             </NavigationContainer>
           </AdwToastOverlay>
         </AdwApplicationWindow>
