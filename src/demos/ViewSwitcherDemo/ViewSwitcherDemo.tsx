@@ -1,18 +1,16 @@
-import * as Gtk from '@gtkx/gi/gtk'
-import { AdwDialog, AdwHeaderBar, AdwNavigationPage, AdwStatusPage, AdwToolbarView } from '@gtkx/jsx/adw'
-import { GtkBox, GtkButton, GtkLabel } from '@gtkx/jsx/gtk'
-import { createTabNavigator, type StackScreenProps } from '@gtkx/navigation'
+import { AdwDialog, AdwStatusPage } from '@gtkx/jsx/adw'
+import { createTabNavigator } from '@gtkx/navigation'
 
 type PageRoutes = { World: undefined; Alarm: undefined; Stopwatch: undefined; Timer: undefined }
 
 const Tabs = createTabNavigator<PageRoutes>()
 
-type NavigationViewDemoProps = {
+type ViewSwitcherDemoProps = {
   isOpen: boolean
   onClosed: () => void
 }
 
-export const ViewSwitcherDemo = ({ isOpen, onClosed }: NavigationViewDemoProps) => {
+export const ViewSwitcherDemo = ({ isOpen, onClosed }: ViewSwitcherDemoProps) => {
   if (!isOpen) {
     return null
   }
@@ -41,14 +39,6 @@ export const ViewSwitcherDemo = ({ isOpen, onClosed }: NavigationViewDemoProps) 
     />
   )
 
-  const StopWatch = () => (
-    <AdwStatusPage
-      iconName="clock-stopwatch-symbolic"
-      title="Stopwatch"
-      description="Use the stopwatch to time how long something takes."
-    />
-  )
-
   const Timer = () => (
     <AdwStatusPage
       iconName="clock-timer-symbolic"
@@ -58,15 +48,14 @@ export const ViewSwitcherDemo = ({ isOpen, onClosed }: NavigationViewDemoProps) 
   )
 
   return (
-    <AdwDialog contentWidth={640} contentHeight={480} title="AdwNavigationView Demo" onClosed={onClosed}>
-      <Tabs.Navigator tabBarPosition="top" screenOptions={{ animation: 'fade', useUnderline: true }}>
+    <AdwDialog contentWidth={640} contentHeight={480} title="View Switcher Demo" onClosed={onClosed}>
+      <Tabs.Navigator tabBarPosition="top" screenOptions={{ animation: 'fade' }}>
         <Tabs.Screen
           name="World"
           component={World}
           options={{
             tabBarIcon: 'clock-world-symbolic',
-            title: '_World',
-            useUnderline: true
+            title: '_World'
           }}
         />
         <Tabs.Screen
@@ -74,19 +63,17 @@ export const ViewSwitcherDemo = ({ isOpen, onClosed }: NavigationViewDemoProps) 
           component={Alarm}
           options={{
             tabBarIcon: 'clock-alarm-symbolic',
-            title: '_Alarm',
-            useUnderline: true
+            title: '_Alarm'
           }}
         />
         <Tabs.Screen
-          name="StowWatch"
+          name="Stopwatch"
           component={Stopwatch}
           options={{
             tabBarIcon: 'clock-stopwatch-symbolic',
             tabBarBadge: 3,
             needsAttention: true,
-            title: '_Stopwatch',
-            useUnderline: true
+            title: '_Stopwatch'
           }}
         />
         <Tabs.Screen
@@ -94,8 +81,7 @@ export const ViewSwitcherDemo = ({ isOpen, onClosed }: NavigationViewDemoProps) 
           component={Timer}
           options={{
             tabBarIcon: 'clock-timer-symbolic',
-            title: '_Timer',
-            useUnderline: true
+            title: '_Timer'
           }}
         />
       </Tabs.Navigator>
