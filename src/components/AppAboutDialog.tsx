@@ -12,9 +12,9 @@ export const AppAboutDialog = ({ onClose }: { onClose: () => void }) => {
       return
     }
 
-    dialog.addAcknowledgementSection('Special thanks to', [
-      'GTKX https://gtkx.dev',
-      'libadwaita demo https://gitlab.gnome.org/GNOME/libadwaita/tree/main/demo'
+    dialog.addAcknowledgementSection('Special thanks to', ['GTKX https://gtkx.dev'])
+    dialog.addAcknowledgementSection('Ported from', [
+      'libadwaita demo (LGPL-2.1-or-later) https://gitlab.gnome.org/GNOME/libadwaita/tree/main/demo'
     ])
   }, [])
 
