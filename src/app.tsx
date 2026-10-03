@@ -11,7 +11,6 @@ import { useEffect, useRef, useState } from 'react'
 import { AppDialogs, type DialogKind } from './components/AppDialogs.js'
 import { Navigation, navigateToPageShortcut, pageShortcuts } from './components/DemoWindow.js'
 import { ToastOverlayRefProvider } from './components/ToastOverlayContext.js'
-import { TabViewActions } from './demos/TabViewDemo/TabViewActions.js'
 
 type AppActionsProps = {
   onInspectorToggled: () => void
@@ -84,7 +83,6 @@ const MainWindow = ({
               />
               <GSimpleAction name="close" onActivate={() => windowRef.current?.close()} />
               {pageActions}
-              <TabViewActions />
             </>
           }
         >
@@ -117,7 +115,14 @@ export const App = () => {
         { detailedActionName: 'app.shortcuts', accels: ['<Control>question'] },
         { detailedActionName: 'win.adaptive-preview', accels: ['<Control><Shift>p'] },
         { detailedActionName: 'win.close', accels: ['<Control>w'] },
-        { detailedActionName: 'app.quit', accels: ['<Control>q'] }
+        { detailedActionName: 'app.quit', accels: ['<Control>q'] },
+        { detailedActionName: 'win.tab-new', accels: ['<Control>t'] },
+        { detailedActionName: 'win.tab-duplicate', accels: ['<Control><Shift>t'] },
+        { detailedActionName: 'win.tab-close', accels: ['<Control><Shift>w'] },
+        ...pageShortcuts.map((_, index) => ({
+          detailedActionName: `win.tab-select-${index + 1}`,
+          accels: [`<Alt>${index + 1}`]
+        }))
       ]}
     >
       <MainWindow

@@ -4,8 +4,8 @@ import * as Gio from '@gtkx/gi/gio'
 import * as GLib from '@gtkx/gi/glib'
 import * as Gtk from '@gtkx/gi/gtk'
 import {
+  AdwApplicationWindow,
   AdwBreakpoint,
-  AdwDialog,
   AdwHeaderBar,
   AdwTabBar,
   AdwTabButton,
@@ -14,7 +14,9 @@ import {
   AdwToolbarView
 } from '@gtkx/jsx/adw'
 import { GtkButton } from '@gtkx/jsx/gtk'
+import { useParentWindow } from '@gtkx/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { TabViewActions } from './TabViewActions.js'
 import { tabPage, tabPageColors } from './tabPageStyles.js'
 import { type DemoTab, tabStore, useTabViewState } from './tabViewStore.js'
 
@@ -30,6 +32,10 @@ const buildMenu = () => {
   const edit = new Gio.Menu()
   edit.append('D_uplicate', 'win.tab-duplicate')
   menu.appendSection(null, edit)
+
+  const windows = new Gio.Menu()
+  appendHidden(windows, 'Move to New Window', 'win.tab-move-to-new-window')
+  menu.appendSection(null, windows)
 
   const pin = new Gio.Menu()
   appendHidden(pin, 'P_in Tab', 'win.tab-pin')
@@ -57,19 +63,23 @@ const buildMenu = () => {
   return menu
 }
 
-type Props = {
-  isOpen: boolean
-  onClosed: () => void
-}
-
 type PageRef = {
   page: Adw.TabPage
   content: Adw.Bin
   entry: Gtk.Entry
 }
 
-export default function TabViewDemo({ isOpen, onClosed }: Props) {
-  const { tabs, overviewOpen } = useTabViewState()
+type WindowProps = {
+  windowId: number
+  transientFor: Gtk.Window | null
+  onClosed: () => void
+}
+
+const TabViewWindow = ({ windowId, transientFor, onClosed }: WindowProps) => {
+  const { tabs, selectedByWindow, overviewByWindow } = useTabViewState()
+  const windowTabs = useMemo(() => tabs.filter(tab => tab.windowId === windowId), [tabs, windowId])
+  const overviewOpen = overviewByWindow[windowId] ?? false
+  const selectedId = selectedByWindow[windowId] ?? -1
   const [isNarrow, setIsNarrow] = useState(false)
   const [tabView, setTabView] = useState<Adw.TabView | null>(null)
   const refs = useRef(new Map<number, PageRef>())
@@ -114,9 +124,9 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
   }, [])
 
   useEffect(() => {
-    if (!isOpen || !tabView) return
+    if (!tabView) return
 
-    for (const tab of tabs) {
+    for (const tab of windowTabs) {
       const page = refs.current.get(tab.id)?.page ?? createPage(tab)
       if (!page) continue
 
@@ -149,40 +159,52 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
     }
 
     for (const [id, ref] of refs.current) {
-      if (tabs.find(tab => tab.id === id)) continue
+      if (windowTabs.some(tab => tab.id === id)) continue
       tabView.closePage(ref.page)
       releasePage(id)
     }
-  }, [isOpen, tabView, tabs, createPage, releasePage])
 
-  // The pages die with the dialog when it closes. Without this, refs.current keeps the
+    // A tab moved in from another window arrives without being the selected page.
+    const selectedRef = refs.current.get(selectedId)
+    if (selectedRef && !selectedRef.page.selected) tabView.setSelectedPage(selectedRef.page)
+  }, [tabView, windowTabs, selectedId, createPage, releasePage])
+
+  // The pages die with the window when it closes. Without this, refs.current keeps the
   // wrappers of destroyed widgets around and the next sync pass writes to dead objects.
   useEffect(() => {
-    if (!isOpen) refs.current.clear()
     return () => {
       refs.current.clear()
     }
-  }, [isOpen])
+  }, [])
 
   const menuModel = useMemo(buildMenu, [])
 
   const topBar = (
     <>
       <AdwHeaderBar
-        start={<AdwTabButton view={tabView} visible={isNarrow} onClicked={() => tabStore.toggleOverview()} />}
+        start={
+          <>
+            <GtkButton
+              iconName="window-new-symbolic"
+              tooltipText="New Window"
+              onClicked={() => tabStore.openWindow()}
+            />
+            <AdwTabButton view={tabView} visible={isNarrow} onClicked={() => tabStore.toggleOverview(windowId)} />
+          </>
+        }
         end={
           <>
             <GtkButton
               iconName="view-grid-symbolic"
               tooltipText="Tab Overview"
               visible={!isNarrow}
-              onClicked={() => tabStore.toggleOverview()}
+              onClicked={() => tabStore.toggleOverview(windowId)}
             />
             <GtkButton
               iconName="tab-new-symbolic"
               tooltipText="New Tab"
               visible={!isNarrow}
-              onClicked={() => tabStore.add()}
+              onClicked={() => tabStore.add(windowId)}
             />
           </>
         }
@@ -191,16 +213,16 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
     </>
   )
 
-  if (!isOpen) return null
-
   return (
-    <AdwDialog
+    <AdwApplicationWindow
+      transientFor={transientFor}
       title="Tab View"
-      widthRequest={360}
-      heightRequest={200}
-      contentWidth={900}
-      contentHeight={600}
-      onClosed={onClosed}
+      defaultWidth={900}
+      defaultHeight={600}
+      onCloseRequest={() => {
+        onClosed()
+        return undefined
+      }}
       breakpoints={
         <AdwBreakpoint
           condition={Adw.BreakpointCondition.parse('max-width: 600sp')}
@@ -208,13 +230,14 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
           onUnapply={() => setIsNarrow(false)}
         />
       }
+      actions={<TabViewActions windowId={windowId} />}
     >
       <AdwTabOverview
         view={tabView}
         open={overviewOpen}
-        onNotifyOpen={open => tabStore.setOverview(Boolean(open))}
+        onNotifyOpen={open => tabStore.setOverview(windowId, Boolean(open))}
         enableNewTab
-        onCreateTab={() => createPage(tabStore.add()) ?? undefined}
+        onCreateTab={() => createPage(tabStore.add(windowId)) ?? undefined}
       >
         <AdwToolbarView topBar={topBar} topBarStyle={Adw.ToolbarStyle.RAISED}>
           <AdwTabView
@@ -234,6 +257,26 @@ export default function TabViewDemo({ isOpen, onClosed }: Props) {
           />
         </AdwToolbarView>
       </AdwTabOverview>
-    </AdwDialog>
+    </AdwApplicationWindow>
+  )
+}
+
+/** Renders one window per open tab window. Every window owns its own TabView and actions. */
+export const TabViewDemo = () => {
+  const { windows } = useTabViewState()
+  const parentWindow = useParentWindow()
+
+  return (
+    <>
+      {windows.map(windowId => (
+        <TabViewWindow
+          key={windowId}
+          windowId={windowId}
+          // The main window is the window ancestor, so the extra windows are parented to it.
+          transientFor={parentWindow}
+          onClosed={() => tabStore.closeWindow(windowId)}
+        />
+      ))}
+    </>
   )
 }
