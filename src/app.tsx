@@ -24,6 +24,7 @@ const AppActions = ({ onInspectorToggled, showDialog }: AppActionsProps) => (
     <GSimpleAction name="shortcuts" onActivate={() => showDialog('shortcuts')} />
     <GSimpleAction name="about" onActivate={() => showDialog('about')} />
     <GSimpleAction name="inspector" onActivate={onInspectorToggled} />
+    <GSimpleAction name="quit" onActivate={() => quit()} />
   </>
 )
 
@@ -40,12 +41,14 @@ const MainWindow = ({
   const [adaptivePreview, setAdaptivePreview] = useState(false)
   const [narrow, setNarrow] = useState(false)
   const toastOverlayRef = useRef<Adw.ToastOverlay | null>(null)
+  const windowRef = useRef<Adw.ApplicationWindow | null>(null)
   const collapsed = narrow
 
   return (
     <ToastProvider overlayRef={toastOverlayRef}>
       <ToastOverlayRefProvider overlayRef={toastOverlayRef}>
         <AdwApplicationWindow
+          ref={windowRef}
           title={'GTKX Adwaita Demo'}
           defaultWidth={1000}
           defaultHeight={720}
@@ -70,6 +73,7 @@ const MainWindow = ({
                 state={GLib.Variant.newBoolean(adaptivePreview)}
                 onChangeState={value => setAdaptivePreview(value?.getBoolean() ?? false)}
               />
+              <GSimpleAction name="close" onActivate={() => windowRef.current?.close()} />
               <TabViewActions />
             </>
           }
@@ -100,7 +104,9 @@ export const App = () => {
       actionAccels={[
         { detailedActionName: 'app.preferences', accels: ['<Control>comma'] },
         { detailedActionName: 'app.shortcuts', accels: ['<Control>question'] },
-        { detailedActionName: 'win.adaptive-preview', accels: ['<Control><Shift>p'] }
+        { detailedActionName: 'win.adaptive-preview', accels: ['<Control><Shift>p'] },
+        { detailedActionName: 'win.close', accels: ['<Control>w'] },
+        { detailedActionName: 'app.quit', accels: ['<Control>q'] }
       ]}
     >
       <MainWindow
