@@ -25,8 +25,7 @@ export const AppAboutDialog = ({ onClose }: { onClose: () => void }) => {
       applicationIcon={applicationId}
       version="1.0.0"
       developerName={developerName}
-      website="https://gtkx.dev"
-      issueUrl="https://github.com/gtkx-org/gtkx/issues"
+      issueUrl="https://github.com/dspangenberg/gtkx-libadwaita-demo/issues"
       copyright={`© 2026 ${developerName}`}
       licenseType={Gtk.License.LGPL_2_1}
       developers={[developerName]}
