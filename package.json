@@ -1,9 +1,9 @@
 {
     "name": "gtkx-libadwaita-demo",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "private": true,
     "description": "A GNOME application built with GTKX",
-    "license": "LGPL-2.1-only",
+    "license": "LGPL-2.1-or-later",
     "author": "Danny Spangenberg <danny.spangenberg@twiceware.de>",
     "type": "module",
     "engines": {
