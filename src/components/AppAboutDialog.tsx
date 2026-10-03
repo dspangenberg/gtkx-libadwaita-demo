@@ -23,7 +23,7 @@ export const AppAboutDialog = ({ onClose }: { onClose: () => void }) => {
       ref={addAcknowledgements}
       applicationName="GTKX Adwaita Demo"
       applicationIcon={applicationId}
-      version="1.0.0"
+      version="1.11.alpha"
       developerName={developerName}
       issueUrl="https://github.com/dspangenberg/gtkx-libadwaita-demo/issues"
       copyright={`© 2026 ${developerName}`}
