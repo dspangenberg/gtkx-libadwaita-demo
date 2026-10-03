@@ -6,7 +6,7 @@ import { SplitViewsDemo } from './SplitViewsDemo.js'
 import { SplitViewsOverlayDemo } from './SplitViewsOverlayDemo.js'
 
 export const SplitViewsDemoPage = () => {
-  const [isNavigationSplitViewOpen, setIsNavigationSplitViewOpen] = useState(true)
+  const [isNavigationSplitViewOpen, setIsNavigationSplitViewOpen] = useState(false)
   const [isNavigationOverlaySplitViewOpen, setIsOverlayNavigationSplitViewOpen] = useState(false)
 
   return (
