@@ -1,74 +1,29 @@
 import * as Adw from '@gtkx/gi/adw'
 import * as Gtk from '@gtkx/gi/gtk'
-import { AdwBreakpoint, AdwDialog, AdwHeaderBar, AdwStatusPage } from '@gtkx/jsx/adw'
-import { GtkBox, GtkButton, GtkToggleButton } from '@gtkx/jsx/gtk'
-import { createDrawerNavigator, DrawerActions, type DrawerHeaderProps } from '@gtkx/navigation'
+import {
+  AdwBreakpoint,
+  AdwDialog,
+  AdwHeaderBar,
+  AdwOverlaySplitView,
+  AdwStatusPage,
+  AdwToolbarView
+} from '@gtkx/jsx/adw'
+import { GtkBox, GtkToggleButton } from '@gtkx/jsx/gtk'
 import { useState } from 'react'
-
-type PageRoutes = { Content: undefined }
-
-const Drawer = createDrawerNavigator<PageRoutes>()
 
 type SplitViewsOverlayDemoProps = {
   isOpen: boolean
   onClosed: () => void
 }
 
-const Content = () => <AdwStatusPage title="Content" />
-
 export const SplitViewsOverlayDemo = ({ isOpen, onClosed }: SplitViewsOverlayDemoProps) => {
-  const [sidebarPosition, setSidebarPosition] = useState<'start' | 'end'>('start')
-  const [isNarrow, setIsNarrow] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(true)
+  const [sidebarPosition, setSidebarPosition] = useState(Gtk.PackType.START)
 
   if (!isOpen) {
     return null
   }
-
-  const Sidebar = () => (
-    <AdwStatusPage title="Sidebar">
-      <GtkBox orientation={Gtk.Orientation.VERTICAL} spacing={18} halign={Gtk.Align.CENTER}>
-        <GtkToggleButton
-          label="Start"
-          canShrink
-          active={sidebarPosition === 'start'}
-          cssClasses={['pill']}
-          onToggled={() => setSidebarPosition('start')}
-        />
-        <GtkToggleButton
-          label="End"
-          canShrink
-          active={sidebarPosition === 'end'}
-          cssClasses={['pill']}
-          onToggled={() => setSidebarPosition('end')}
-        />
-      </GtkBox>
-    </AdwStatusPage>
-  )
-
-  const header = ({ navigation }: DrawerHeaderProps) => (
-    <AdwHeaderBar
-      start={
-        sidebarPosition === 'start' ? (
-          <GtkButton
-            iconName="view-sidebar-start-symbolic"
-            tooltipText="Toggle Sidebar"
-            accessibleLabel="Toggle Sidebar"
-            onClicked={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-          />
-        ) : undefined
-      }
-      end={
-        sidebarPosition === 'end' ? (
-          <GtkButton
-            iconName="view-sidebar-end-symbolic"
-            tooltipText="Toggle Sidebar"
-            accessibleLabel="Toggle Sidebar"
-            onClicked={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-          />
-        ) : undefined
-      }
-    />
-  )
 
   return (
     <AdwDialog
@@ -80,24 +35,63 @@ export const SplitViewsOverlayDemo = ({ isOpen, onClosed }: SplitViewsOverlayDem
       breakpoints={
         <AdwBreakpoint
           condition={Adw.BreakpointCondition.parse('max-width: 400sp')}
-          onApply={() => setIsNarrow(true)}
-          onUnapply={() => setIsNarrow(false)}
+          onApply={() => setCollapsed(true)}
+          onUnapply={() => setCollapsed(false)}
         />
       }
       onClosed={onClosed}
     >
-      <Drawer.Navigator
-        initialRouteName="Content"
-        collapsed={isNarrow}
-        sidebarPosition={sidebarPosition}
-        drawerContent={() => <Sidebar />}
+      <AdwToolbarView
+        topBarStyle={Adw.ToolbarStyle.RAISED}
+        topBar={
+          <AdwHeaderBar
+            start={
+              <GtkToggleButton
+                iconName="view-sidebar-start-symbolic"
+                tooltipText="Toggle Sidebar"
+                visible={sidebarPosition === Gtk.PackType.START}
+                active={showSidebar}
+                onToggled={() => setShowSidebar(previous => !previous)}
+              />
+            }
+            end={
+              <GtkToggleButton
+                iconName="view-sidebar-end-symbolic"
+                tooltipText="Toggle Sidebar"
+                visible={sidebarPosition === Gtk.PackType.END}
+                active={showSidebar}
+                onToggled={() => setShowSidebar(previous => !previous)}
+              />
+            }
+          />
+        }
       >
-        <Drawer.Screen
-          name="Content"
-          component={Content}
-          options={{ title: 'Content', drawerLabel: 'Content', header }}
-        />
-      </Drawer.Navigator>
+        <AdwOverlaySplitView
+          collapsed={collapsed}
+          showSidebar={showSidebar}
+          sidebarPosition={sidebarPosition}
+          sidebar={
+            <AdwStatusPage title="Sidebar">
+              <GtkBox orientation={Gtk.Orientation.VERTICAL} spacing={18} halign={Gtk.Align.CENTER}>
+                <GtkToggleButton
+                  label="Start"
+                  cssClasses={['pill']}
+                  active={sidebarPosition === Gtk.PackType.START}
+                  onToggled={() => setSidebarPosition(Gtk.PackType.START)}
+                />
+                <GtkToggleButton
+                  label="End"
+                  cssClasses={['pill']}
+                  active={sidebarPosition === Gtk.PackType.END}
+                  onToggled={() => setSidebarPosition(Gtk.PackType.END)}
+                />
+              </GtkBox>
+            </AdwStatusPage>
+          }
+        >
+          <AdwStatusPage title="Content" />
+        </AdwOverlaySplitView>
+      </AdwToolbarView>
     </AdwDialog>
   )
 }

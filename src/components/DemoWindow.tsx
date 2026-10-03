@@ -1,101 +1,226 @@
-import { AdwSidebar, AdwSidebarItem, AdwSidebarSection } from '@gtkx/jsx/adw'
-import { createSplitViewNavigator, type SplitViewScreenProps } from '@gtkx/navigation'
+import * as Adw from '@gtkx/gi/adw'
+import * as Gtk from '@gtkx/gi/gtk'
+import {
+  AdwHeaderBar,
+  AdwSidebar,
+  AdwSidebarItem,
+  AdwSidebarSection,
+  AdwStatusPage,
+  AdwToolbarView
+} from '@gtkx/jsx/adw'
+import { GMenu } from '@gtkx/jsx/gio'
+import { GtkMenuButton, GtkSearchBar, GtkSearchEntry, GtkStringFilter, GtkToggleButton } from '@gtkx/jsx/gtk'
+import { createDrawerNavigator, DrawerActions, type DrawerContentProps, type NavigationHelpers } from '@gtkx/navigation'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AboutDialogDemo } from '@/demos/AboutDialogDemo.js'
+import { AlertDialogDemo } from '@/demos/AlertDialogDemo.js'
+import { AnimationsDemo } from '@/demos/AnimationsDemo.js'
 import { AvatarDemo } from '@/demos/AvatarDemo.js'
 import { BannerDemo } from '@/demos/BannerDemo.js'
 import { BottomSheetDemo } from '@/demos/BottomSheetDemo.js'
+import { BoxedListDemo } from '@/demos/BoxedListDemo.js'
+import { ButtonsDemo } from '@/demos/ButtonsDemo.js'
 import { CarouselDemo } from '@/demos/CarouselDemo.js'
+import { ClampDemo } from '@/demos/ClampDemo.js'
+import { MultiLayoutDemo } from '@/demos/MultiLayoutDemo.js'
 import { NavigationViewDemoPage } from '@/demos/NavigationViewDemo/NavigationViewDemoPage.js'
 import { SpinnerDemo } from '@/demos/SpinnerDemo.js'
 import { SplitViewsDemoPage } from '@/demos/SplitViewsDemo/SplitViewsDemoPage.js'
+import { StylesDemo } from '@/demos/StylesDemo/StylesDemo.js'
 import { TabViewDemoPage } from '@/demos/TabViewDemo/TabViewDemoPage.js'
 import { ToastDemo } from '@/demos/ToastDemo.js'
+import { ToggleGroupsDemo } from '@/demos/ToggleGroupsDemo.js'
 import { ViewSwitcherDemoPage } from '@/demos/ViewSwitcherDemo/ViewSwitcherDemoPage.js'
 import { Welcome } from '@/demos/Welcome.js'
+import { WrapBoxDemo } from '@/demos/WrapBoxDemo.js'
 import { pascalCase } from '@/utils/format.js'
 
 type RouteParams = {
+  AboutDialog: undefined
+  AlertDialog: undefined
+  Animations: undefined
   Avatar: undefined
   Banner: undefined
   BottomSheet: undefined
+  BoxedList: undefined
+  Buttons: undefined
   Carousel: undefined
+  Clamp: undefined
+  MultiLayoutView: undefined
   NavigationView: undefined
-  Sidebar: undefined
   Spinner: undefined
+  StyleClasses: undefined
   SplitViews: undefined
   TabView: undefined
   Toasts: undefined
+  ToggleGroups: undefined
   ViewSwitcher: undefined
+  WrapBox: undefined
   Welcome: undefined
 }
 
-const Split = createSplitViewNavigator<RouteParams>()
+const Drawer = createDrawerNavigator<RouteParams>()
 
-const Sidebar = ({ navigation }: SplitViewScreenProps<RouteParams, 'Sidebar'>) => (
-  <AdwSidebar
-    cssClasses={['navigation-sidebar']}
-    onActivated={(index, self) => {
-      const item = self.getItem(index)
-      const routeName = pascalCase(item?.getTitle() as string)
-      navigation.navigate(routeName as keyof RouteParams)
-    }}
-  >
-    <AdwSidebarSection>
-      <AdwSidebarItem iconName="welcome-symbolic" title="Welcome" key="welcome" />
-    </AdwSidebarSection>
-    <AdwSidebarSection title="Navigation">
-      <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" />
-      <AdwSidebarItem iconName="widget-split-views-symbolic" title="Split Views" />
-      <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" />
-      <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" />
-      <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheet" />
-      <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" />
-    </AdwSidebarSection>
-    <AdwSidebarSection title="Controls">
-      <AdwSidebarItem iconName="widget-list-symbolic" title="Boxed List" enabled={false} />
-      <AdwSidebarItem iconName="widget-toggle-group-symbolic" title="Toggle Groups" enabled={false} />
-      <AdwSidebarItem iconName="widget-buttons-symbolic" title="Buttons" enabled={false} />
-    </AdwSidebarSection>
-    <AdwSidebarSection title="Display">
-      <AdwSidebarItem iconName="widget-banner-symbolic" title="Banner" />
-      <AdwSidebarItem iconName="widget-toast-symbolic" title="Toasts" />
-      <AdwSidebarItem iconName="process-working-symbolic" title="Spinner" />
-      <AdwSidebarItem iconName="adw-avatar-symbolic" title="Avatar" />
-    </AdwSidebarSection>
-    <AdwSidebarSection title="Dialogs">
-      <AdwSidebarItem iconName="widget-dialog-symbolic" title="Alert Dialog" enabled={false} />
-      <AdwSidebarItem iconName="widget-about-symbolic" title="About Dialog" enabled={false} />
-    </AdwSidebarSection>
-    <AdwSidebarSection title="Layout">
-      <AdwSidebarItem iconName="widget-clamp-symbolic" title="Clamp" enabled={false} />
-      <AdwSidebarItem iconName="widget-wrap-box-symbolic" title="Wrap Box" enabled={false} />
-      <AdwSidebarItem iconName="widget-multi-layout-symbolic" title="Multi-Layout View" enabled={false} />
-    </AdwSidebarSection>
-    <AdwSidebarSection title="Miscellaneous">
-      <AdwSidebarItem iconName="style-classes-symbolic" title="Style Classes" enabled={false} />
-      <AdwSidebarItem iconName="animations-symbolic" title="Animations" enabled={false} />
-    </AdwSidebarSection>
-  </AdwSidebar>
+const PrimaryMenu = () => (
+  <GMenu
+    items={[
+      { section: [{ label: '_Inspector', action: 'app.inspector' }] },
+      { section: [{ label: 'A_daptive Preview', action: 'win.adaptive-preview' }] },
+      {
+        section: [
+          { label: '_Preferences', action: 'app.preferences' },
+          { label: '_Keyboard Shortcuts', action: 'app.shortcuts' }
+        ]
+      },
+      { section: [{ label: '_About GTKX Adwaita Demo', action: 'app.about' }] }
+    ]}
+  />
 )
 
-export const Navigation = () => (
-  <Split.Navigator minSidebarWidth={220} maxSidebarWidth={300} sidebarWidthFraction={0.25} initialRouteName="Welcome">
-    <Split.Screen name="Sidebar" component={Sidebar} options={{ title: 'GTKX Adwaita Demo' }} />
+const Sidebar = ({ navigation }: Pick<DrawerContentProps, 'navigation'>) => {
+  const sidebarRef = useRef<Adw.Sidebar | null>(null)
+  const [searchMode, setSearchMode] = useState(false)
+  const [search, setSearch] = useState('')
+  const titleExpression = useMemo(() => Gtk.PropertyExpression.new(Adw.SidebarItem, null, 'title'), [])
 
-    <Split.Screen name="Avatar" component={AvatarDemo} options={{ headerBackVisible: false }} />
-    <Split.Screen name="Banner" component={BannerDemo} options={{ headerBackVisible: false }} />
-    <Split.Screen name="BottomSheet" component={BottomSheetDemo} options={{ headerShown: false }} />
-    <Split.Screen name="Carousel" component={CarouselDemo} options={{ headerBackVisible: false }} />
-    <Split.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ headerBackVisible: false }} />
+  return (
+    <AdwToolbarView
+      topBar={
+        <>
+          <AdwHeaderBar
+            start={
+              <GtkToggleButton
+                iconName="edit-find-symbolic"
+                active={searchMode}
+                onNotifyActive={value => setSearchMode(value ?? false)}
+              />
+            }
+            end={
+              <GtkMenuButton
+                tooltipText="Main Menu"
+                iconName="open-menu-symbolic"
+                primary
+                menuModel={<PrimaryMenu />}
+              />
+            }
+          />
+          <GtkSearchBar searchModeEnabled={searchMode}>
+            <GtkSearchEntry
+              placeholderText="Find pages"
+              hexpand
+              text={search}
+              onNotifyText={value => setSearch(value ?? '')}
+              onActivate={() => sidebarRef.current?.grabFocus()}
+            />
+          </GtkSearchBar>
+        </>
+      }
+    >
+      <AdwSidebar
+        ref={sidebarRef}
+        cssClasses={['navigation-sidebar']}
+        filter={<GtkStringFilter expression={titleExpression} search={search} />}
+        placeholder={
+          <AdwStatusPage iconName="edit-find-symbolic" title="No Results Found" description="Try a different search" />
+        }
+        onActivated={(index, self) => {
+          const item = self.getItem(index)
+          const routeName = pascalCase(item?.getTitle() as string)
+          navigation.navigate(routeName as keyof RouteParams)
+        }}
+      >
+        <AdwSidebarSection>
+          <AdwSidebarItem iconName="welcome-symbolic" title="Welcome" key="welcome" />
+        </AdwSidebarSection>
+        <AdwSidebarSection title="Navigation">
+          <AdwSidebarItem iconName="widget-navigation-view-symbolic" title="Navigation View" />
+          <AdwSidebarItem iconName="widget-split-views-symbolic" title="Split Views" />
+          <AdwSidebarItem iconName="widget-view-switcher-symbolic" title="View Switcher" />
+          <AdwSidebarItem iconName="widget-tab-view-symbolic" title="Tab View" />
+          <AdwSidebarItem iconName="widget-bottom-sheet-symbolic" title="Bottom Sheet" />
+          <AdwSidebarItem iconName="widget-carousel-symbolic" title="Carousel" />
+        </AdwSidebarSection>
+        <AdwSidebarSection title="Controls">
+          <AdwSidebarItem iconName="widget-list-symbolic" title="Boxed List" />
+          <AdwSidebarItem iconName="widget-toggle-group-symbolic" title="Toggle Groups" />
+          <AdwSidebarItem iconName="widget-buttons-symbolic" title="Buttons" />
+        </AdwSidebarSection>
+        <AdwSidebarSection title="Display">
+          <AdwSidebarItem iconName="widget-banner-symbolic" title="Banner" />
+          <AdwSidebarItem iconName="widget-toast-symbolic" title="Toasts" />
+          <AdwSidebarItem iconName="process-working-symbolic" title="Spinner" />
+          <AdwSidebarItem iconName="adw-avatar-symbolic" title="Avatar" />
+        </AdwSidebarSection>
+        <AdwSidebarSection title="Dialogs">
+          <AdwSidebarItem iconName="widget-dialog-symbolic" title="Alert Dialog" />
+          <AdwSidebarItem iconName="widget-about-symbolic" title="About Dialog" />
+        </AdwSidebarSection>
+        <AdwSidebarSection title="Layout">
+          <AdwSidebarItem iconName="widget-clamp-symbolic" title="Clamp" />
+          <AdwSidebarItem iconName="widget-wrap-box-symbolic" title="Wrap Box" />
+          <AdwSidebarItem iconName="widget-multi-layout-symbolic" title="Multi-Layout View" />
+        </AdwSidebarSection>
+        <AdwSidebarSection title="Miscellaneous">
+          <AdwSidebarItem iconName="style-classes-symbolic" title="Style Classes" />
+          <AdwSidebarItem iconName="animations-symbolic" title="Animations" />
+        </AdwSidebarSection>
+      </AdwSidebar>
+    </AdwToolbarView>
+  )
+}
 
-    <Split.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ headerBackVisible: false }} />
-    <Split.Screen name="Spinner" component={SpinnerDemo} options={{ headerBackVisible: false }} />
-    <Split.Screen
-      name="TabView"
-      component={TabViewDemoPage}
-      options={{ headerBackVisible: false, headerShown: false }}
-    />
-    <Split.Screen name="Toasts" component={ToastDemo} options={{ headerBackVisible: false }} />
-    <Split.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} options={{ headerBackVisible: false }} />
-    <Split.Screen name="Welcome" component={Welcome} options={{ headerBackVisible: false, title: undefined }} />
-  </Split.Navigator>
-)
+export const Navigation = ({ collapsed = false }: { collapsed?: boolean }) => {
+  const navigationRef = useRef<NavigationHelpers<RouteParams> | null>(null)
+
+  useEffect(() => {
+    const navigation = navigationRef.current
+
+    if (navigation === null) {
+      return
+    }
+
+    const action = collapsed ? DrawerActions.closeDrawer() : DrawerActions.openDrawer()
+
+    navigation.dispatch({ ...action, target: navigation.getState().key })
+  }, [collapsed])
+
+  return (
+    <Drawer.Navigator
+      collapsed={collapsed}
+      defaultStatus={collapsed ? 'closed' : 'open'}
+      minSidebarWidth={220}
+      maxSidebarWidth={300}
+      sidebarWidthFraction={0.25}
+      initialRouteName="Welcome"
+      drawerContent={Sidebar}
+      layout={({ navigation, children }) => {
+        navigationRef.current = navigation
+
+        return <>{children}</>
+      }}
+    >
+      <Drawer.Screen name="AboutDialog" component={AboutDialogDemo} />
+      <Drawer.Screen name="AlertDialog" component={AlertDialogDemo} />
+      <Drawer.Screen name="Animations" component={AnimationsDemo} />
+      <Drawer.Screen name="Avatar" component={AvatarDemo} />
+      <Drawer.Screen name="Banner" component={BannerDemo} />
+      <Drawer.Screen name="BottomSheet" component={BottomSheetDemo} options={{ headerShown: false }} />
+      <Drawer.Screen name="BoxedList" component={BoxedListDemo} />
+      <Drawer.Screen name="Buttons" component={ButtonsDemo} />
+      <Drawer.Screen name="Carousel" component={CarouselDemo} />
+      <Drawer.Screen name="Clamp" component={ClampDemo} />
+      <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} />
+      <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} />
+
+      <Drawer.Screen name="SplitViews" component={SplitViewsDemoPage} />
+      <Drawer.Screen name="StyleClasses" component={StylesDemo} />
+      <Drawer.Screen name="Spinner" component={SpinnerDemo} />
+      <Drawer.Screen name="TabView" component={TabViewDemoPage} options={{ headerShown: false }} />
+      <Drawer.Screen name="Toasts" component={ToastDemo} />
+      <Drawer.Screen name="ToggleGroups" component={ToggleGroupsDemo} />
+      <Drawer.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} />
+      <Drawer.Screen name="WrapBox" component={WrapBoxDemo} />
+      <Drawer.Screen name="Welcome" component={Welcome} options={{ title: undefined }} />
+    </Drawer.Navigator>
+  )
+}
