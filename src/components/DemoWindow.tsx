@@ -199,28 +199,27 @@ export const Navigation = ({ collapsed = false }: { collapsed?: boolean }) => {
         return <>{children}</>
       }}
     >
-      <Drawer.Screen name="AboutDialog" component={AboutDialogDemo} />
-      <Drawer.Screen name="AlertDialog" component={AlertDialogDemo} />
-      <Drawer.Screen name="Animations" component={AnimationsDemo} />
-      <Drawer.Screen name="Avatar" component={AvatarDemo} />
-      <Drawer.Screen name="Banner" component={BannerDemo} />
+      <Drawer.Screen name="AboutDialog" component={AboutDialogDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="AlertDialog" component={AlertDialogDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Animations" component={AnimationsDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Avatar" component={AvatarDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Banner" component={BannerDemo} options={{ headerShown: true }} />
       <Drawer.Screen name="BottomSheet" component={BottomSheetDemo} options={{ headerShown: false }} />
-      <Drawer.Screen name="BoxedList" component={BoxedListDemo} />
-      <Drawer.Screen name="Buttons" component={ButtonsDemo} />
-      <Drawer.Screen name="Carousel" component={CarouselDemo} />
-      <Drawer.Screen name="Clamp" component={ClampDemo} />
-      <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} />
-      <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} />
-
-      <Drawer.Screen name="SplitViews" component={SplitViewsDemoPage} />
-      <Drawer.Screen name="StyleClasses" component={StylesDemo} />
-      <Drawer.Screen name="Spinner" component={SpinnerDemo} />
+      <Drawer.Screen name="BoxedList" component={BoxedListDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Buttons" component={ButtonsDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Carousel" component={CarouselDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Clamp" component={ClampDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ headerShown: true }} />
+      <Drawer.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ headerShown: true }} />
+      <Drawer.Screen name="StyleClasses" component={StylesDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Spinner" component={SpinnerDemo} options={{ headerShown: true }} />
       <Drawer.Screen name="TabView" component={TabViewDemoPage} options={{ headerShown: false }} />
-      <Drawer.Screen name="Toasts" component={ToastDemo} />
-      <Drawer.Screen name="ToggleGroups" component={ToggleGroupsDemo} />
-      <Drawer.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} />
-      <Drawer.Screen name="WrapBox" component={WrapBoxDemo} />
-      <Drawer.Screen name="Welcome" component={Welcome} options={{ title: undefined }} />
+      <Drawer.Screen name="Toasts" component={ToastDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="ToggleGroups" component={ToggleGroupsDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} options={{ headerShown: true }} />
+      <Drawer.Screen name="WrapBox" component={WrapBoxDemo} options={{ headerShown: true }} />
+      <Drawer.Screen name="Welcome" component={Welcome} options={{ headerShown: true }} />
     </Drawer.Navigator>
   )
 }
