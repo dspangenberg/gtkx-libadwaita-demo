@@ -15,11 +15,6 @@ export const ShortcutsDialog = ({ onClose }: { onClose: () => void }) => (
         <AdwShortcutsItem key={page.route} title={page.title} accelerator={`<Control>${index + 1}`} />
       ))}
     </AdwShortcutsSection>
-    <AdwShortcutsSection title="Tabs">
-      <AdwShortcutsItem title="New Tab" accelerator="<Control>t" />
-      <AdwShortcutsItem title="Duplicate Tab" accelerator="<Control><Shift>d" />
-      <AdwShortcutsItem title="Close Tab" accelerator="<Control><Shift>w" />
-    </AdwShortcutsSection>
     <AdwShortcutsSection title="View">
       <AdwShortcutsItem title="Adaptive Preview" accelerator="<Control><Shift>p" />
     </AdwShortcutsSection>

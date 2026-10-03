@@ -117,10 +117,7 @@ export const App = () => {
         { detailedActionName: 'app.shortcuts', accels: ['<Control>question'] },
         { detailedActionName: 'win.adaptive-preview', accels: ['<Control><Shift>p'] },
         { detailedActionName: 'win.close', accels: ['<Control>w'] },
-        { detailedActionName: 'app.quit', accels: ['<Control>q'] },
-        { detailedActionName: 'win.tab-new', accels: ['<Control>t'] },
-        { detailedActionName: 'win.tab-duplicate', accels: ['<Control><Shift>d'] },
-        { detailedActionName: 'win.tab-close', accels: ['<Control><Shift>w'] }
+        { detailedActionName: 'app.quit', accels: ['<Control>q'] }
       ]}
     >
       <MainWindow
