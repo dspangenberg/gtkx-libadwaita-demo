@@ -9,7 +9,7 @@ import { NavigationContainer } from '@gtkx/navigation'
 import { quit } from '@gtkx/react'
 import { useEffect, useRef, useState } from 'react'
 import { AppDialogs, type DialogKind } from './components/AppDialogs.js'
-import { Navigation, navigateToPageShortcut, pageShortcuts } from './components/DemoWindow.js'
+import { Navigation } from './components/DemoWindow.js'
 import { ToastOverlayRefProvider } from './components/ToastOverlayContext.js'
 
 type AppActionsProps = {
@@ -27,13 +27,9 @@ const AppActions = ({ onInspectorToggled, showDialog }: AppActionsProps) => (
   </>
 )
 
-const pageActions = pageShortcuts.map((page, index) => (
-  <GSimpleAction key={page.route} name={`page-${index + 1}`} onActivate={() => navigateToPageShortcut(index)} />
-))
-
-const pageAccels = pageShortcuts.map((page, index) => ({
-  detailedActionName: `win.page-${index + 1}`,
-  accels: [`<Control>${index + 1}`]
+const tabSelectAccels = Array.from({ length: 9 }, (_, index) => ({
+  detailedActionName: `win.tab-select-${index + 1}`,
+  accels: [`<Alt>${index + 1}`]
 }))
 
 const MainWindow = ({
@@ -82,7 +78,6 @@ const MainWindow = ({
                 onChangeState={value => setAdaptivePreview(value?.getBoolean() ?? false)}
               />
               <GSimpleAction name="close" onActivate={() => windowRef.current?.close()} />
-              {pageActions}
             </>
           }
         >
@@ -110,7 +105,6 @@ export const App = () => {
     <AdwApplication
       actions={<AppActions onInspectorToggled={() => setInspectorOpen(open => !open)} showDialog={setDialog} />}
       actionAccels={[
-        ...pageAccels,
         { detailedActionName: 'app.preferences', accels: ['<Control>comma'] },
         { detailedActionName: 'app.shortcuts', accels: ['<Control>question'] },
         { detailedActionName: 'win.adaptive-preview', accels: ['<Control><Shift>p'] },
@@ -118,11 +112,8 @@ export const App = () => {
         { detailedActionName: 'app.quit', accels: ['<Control>q'] },
         { detailedActionName: 'win.tab-new', accels: ['<Control>t'] },
         { detailedActionName: 'win.tab-duplicate', accels: ['<Control><Shift>t'] },
-        { detailedActionName: 'win.tab-close', accels: ['<Control><Shift>w'] },
-        ...pageShortcuts.map((_, index) => ({
-          detailedActionName: `win.tab-select-${index + 1}`,
-          accels: [`<Alt>${index + 1}`]
-        }))
+        { detailedActionName: 'win.tab-close', accels: ['<Control>w'] },
+        ...tabSelectAccels
       ]}
     >
       <MainWindow

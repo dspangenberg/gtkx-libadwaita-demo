@@ -61,30 +61,6 @@ type RouteParams = {
 
 const Drawer = createDrawerNavigator<RouteParams>()
 
-export const pageShortcuts = [
-  { route: 'Welcome', title: 'Welcome' },
-  { route: 'NavigationView', title: 'Navigation View' },
-  { route: 'SplitViews', title: 'Split Views' },
-  { route: 'ViewSwitcher', title: 'View Switcher' },
-  { route: 'TabView', title: 'Tab View' },
-  { route: 'BottomSheet', title: 'Bottom Sheet' },
-  { route: 'Carousel', title: 'Carousel' },
-  { route: 'BoxedList', title: 'Boxed List' },
-  { route: 'ToggleGroups', title: 'Toggle Groups' }
-] satisfies { route: keyof RouteParams; title: string }[]
-
-let navigationHandle: NavigationHelpers<RouteParams> | null = null
-
-export const navigateToPageShortcut = (index: number) => {
-  const page = pageShortcuts[index]
-
-  if (page === undefined) {
-    return
-  }
-
-  navigationHandle?.navigate(page.route)
-}
-
 const PrimaryMenu = () => (
   <GMenu
     items={[
@@ -219,7 +195,6 @@ export const Navigation = ({ collapsed = false }: { collapsed?: boolean }) => {
       drawerContent={Sidebar}
       layout={({ navigation, children }) => {
         navigationRef.current = navigation
-        navigationHandle = navigation
 
         return <>{children}</>
       }}
