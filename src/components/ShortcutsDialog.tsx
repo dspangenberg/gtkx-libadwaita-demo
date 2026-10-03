@@ -1,6 +1,11 @@
 import { AdwShortcutsDialog, AdwShortcutsItem, AdwShortcutsSection } from '@gtkx/jsx/adw'
 import { pageShortcuts } from '@/components/DemoWindow.js'
 
+const tabSelectShortcuts = Array.from({ length: 9 }, (_, offset) => ({
+  title: `Select Tab ${offset + 1}`,
+  accelerator: `<Alt>${offset + 1}`
+}))
+
 export const ShortcutsDialog = ({ onClose }: { onClose: () => void }) => (
   <AdwShortcutsDialog onClosed={onClose}>
     <AdwShortcutsSection title="General">
@@ -13,6 +18,14 @@ export const ShortcutsDialog = ({ onClose }: { onClose: () => void }) => (
     <AdwShortcutsSection title="Pages">
       {pageShortcuts.map((page, index) => (
         <AdwShortcutsItem key={page.route} title={page.title} accelerator={`<Control>${index + 1}`} />
+      ))}
+    </AdwShortcutsSection>
+    <AdwShortcutsSection title="Tabs">
+      <AdwShortcutsItem title="New Tab" accelerator="<Control>t" />
+      <AdwShortcutsItem title="Duplicate Tab" accelerator="<Control><Shift>t" />
+      <AdwShortcutsItem title="Close Tab" accelerator="<Control><Shift>w" />
+      {tabSelectShortcuts.map(shortcut => (
+        <AdwShortcutsItem key={shortcut.title} title={shortcut.title} accelerator={shortcut.accelerator} />
       ))}
     </AdwShortcutsSection>
     <AdwShortcutsSection title="View">
