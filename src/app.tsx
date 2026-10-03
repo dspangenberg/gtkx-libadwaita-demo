@@ -53,7 +53,7 @@ const MainWindow = ({
       <ToastOverlayRefProvider overlayRef={toastOverlayRef}>
         <AdwApplicationWindow
           ref={windowRef}
-          title={'GTKX Adwaita Demo'}
+          title=""
           defaultWidth={1000}
           defaultHeight={720}
           adaptivePreview={adaptivePreview}

@@ -6,12 +6,19 @@ import {
   AdwSidebarItem,
   AdwSidebarSection,
   AdwStatusPage,
-  AdwToolbarView
+  AdwToolbarView,
+  AdwWindowTitle
 } from '@gtkx/jsx/adw'
 import { GMenu } from '@gtkx/jsx/gio'
-import { GtkMenuButton, GtkSearchBar, GtkSearchEntry, GtkStringFilter, GtkToggleButton } from '@gtkx/jsx/gtk'
-import { createDrawerNavigator, DrawerActions, type DrawerContentProps, type NavigationHelpers } from '@gtkx/navigation'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { GtkButton, GtkMenuButton, GtkSearchBar, GtkSearchEntry, GtkStringFilter, GtkToggleButton } from '@gtkx/jsx/gtk'
+import {
+  createDrawerNavigator,
+  DrawerActions,
+  type DrawerContentProps,
+  type DrawerHeaderProps,
+  type NavigationHelpers
+} from '@gtkx/navigation'
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AboutDialogDemo } from '@/demos/AboutDialogDemo.js'
 import { AlertDialogDemo } from '@/demos/AlertDialogDemo.js'
 import { AnimationsDemo } from '@/demos/AnimationsDemo.js'
@@ -61,6 +68,30 @@ type RouteParams = {
 
 const Drawer = createDrawerNavigator<RouteParams>()
 
+const DrawerToggle = ({ navigation }: Pick<DrawerHeaderProps, 'navigation'>) => (
+  <GtkButton
+    iconName="sidebar-show-symbolic"
+    tooltipText="Toggle Sidebar"
+    accessibleLabel="Toggle Sidebar"
+    onClicked={() => {
+      navigation.dispatch(DrawerActions.toggleDrawer())
+    }}
+  />
+)
+
+// The drawer's own context for this is not exported, and demoHeader is shared by every
+// screen, so the flag travels from Navigation through here.
+const CollapsedContext = createContext(false)
+
+// The C app shows no title on its demo screens, so the default header would only add
+// the route name on top. The toggle only appears once the sidebar has collapsed into an
+// overlay, which is where it is the way back to the list.
+const demoHeader = ({ navigation }: DrawerHeaderProps) => {
+  const collapsed = useContext(CollapsedContext)
+
+  return <AdwHeaderBar start={collapsed ? <DrawerToggle navigation={navigation} /> : undefined} />
+}
+
 const PrimaryMenu = () => (
   <GMenu
     items={[
@@ -88,6 +119,8 @@ const Sidebar = ({ navigation }: Pick<DrawerContentProps, 'navigation'>) => {
       topBar={
         <>
           <AdwHeaderBar
+            // The window itself carries no title, so the app name lives here instead.
+            titleWidget={<AdwWindowTitle title="GTKX Adwaita Demo" />}
             start={
               <GtkToggleButton
                 iconName="edit-find-symbolic"
@@ -185,41 +218,43 @@ export const Navigation = ({ collapsed = false }: { collapsed?: boolean }) => {
   }, [collapsed])
 
   return (
-    <Drawer.Navigator
-      collapsed={collapsed}
-      defaultStatus={collapsed ? 'closed' : 'open'}
-      minSidebarWidth={220}
-      maxSidebarWidth={300}
-      sidebarWidthFraction={0.25}
-      initialRouteName="Welcome"
-      drawerContent={Sidebar}
-      layout={({ navigation, children }) => {
-        navigationRef.current = navigation
+    <CollapsedContext value={collapsed}>
+      <Drawer.Navigator
+        collapsed={collapsed}
+        defaultStatus={collapsed ? 'closed' : 'open'}
+        minSidebarWidth={220}
+        maxSidebarWidth={300}
+        sidebarWidthFraction={0.25}
+        initialRouteName="Welcome"
+        drawerContent={Sidebar}
+        layout={({ navigation, children }) => {
+          navigationRef.current = navigation
 
-        return <>{children}</>
-      }}
-    >
-      <Drawer.Screen name="AboutDialog" component={AboutDialogDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="AlertDialog" component={AlertDialogDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Animations" component={AnimationsDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Avatar" component={AvatarDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Banner" component={BannerDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="BottomSheet" component={BottomSheetDemo} options={{ headerShown: false }} />
-      <Drawer.Screen name="BoxedList" component={BoxedListDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Buttons" component={ButtonsDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Carousel" component={CarouselDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Clamp" component={ClampDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ headerShown: true }} />
-      <Drawer.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ headerShown: true }} />
-      <Drawer.Screen name="StyleClasses" component={StylesDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Spinner" component={SpinnerDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="TabView" component={TabViewDemoPage} options={{ headerShown: false }} />
-      <Drawer.Screen name="Toasts" component={ToastDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="ToggleGroups" component={ToggleGroupsDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} options={{ headerShown: true }} />
-      <Drawer.Screen name="WrapBox" component={WrapBoxDemo} options={{ headerShown: true }} />
-      <Drawer.Screen name="Welcome" component={Welcome} options={{ headerShown: true }} />
-    </Drawer.Navigator>
+          return <>{children}</>
+        }}
+      >
+        <Drawer.Screen name="AboutDialog" component={AboutDialogDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="AlertDialog" component={AlertDialogDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Animations" component={AnimationsDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Avatar" component={AvatarDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Banner" component={BannerDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="BottomSheet" component={BottomSheetDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="BoxedList" component={BoxedListDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Buttons" component={ButtonsDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Carousel" component={CarouselDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Clamp" component={ClampDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ header: demoHeader }} />
+        <Drawer.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ header: demoHeader }} />
+        <Drawer.Screen name="StyleClasses" component={StylesDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Spinner" component={SpinnerDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="TabView" component={TabViewDemoPage} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Toasts" component={ToastDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="ToggleGroups" component={ToggleGroupsDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="ViewSwitcher" component={ViewSwitcherDemoPage} options={{ header: demoHeader }} />
+        <Drawer.Screen name="WrapBox" component={WrapBoxDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="Welcome" component={Welcome} options={{ header: demoHeader }} />
+      </Drawer.Navigator>
+    </CollapsedContext>
   )
 }
