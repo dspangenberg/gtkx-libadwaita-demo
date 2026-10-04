@@ -1,10 +1,9 @@
-import { ToastProvider, useToast } from '@gtkx/components'
+import { ToastProvider } from '@gtkx/components'
 import * as Adw from '@gtkx/gi/adw'
 import * as GLib from '@gtkx/gi/glib'
 import * as Gtk from '@gtkx/gi/gtk'
-import { AdwApplication, AdwApplicationWindow, AdwBreakpoint, AdwToastOverlay, AdwToolbarView } from '@gtkx/jsx/adw'
+import { AdwApplication, AdwApplicationWindow, AdwBreakpoint, AdwToastOverlay } from '@gtkx/jsx/adw'
 import { GSimpleAction } from '@gtkx/jsx/gio'
-import { GtkBox, GtkButton, GtkLabel } from '@gtkx/jsx/gtk'
 import { NavigationContainer } from '@gtkx/navigation'
 import { quit } from '@gtkx/react'
 import { useEffect, useRef, useState } from 'react'
@@ -41,7 +40,6 @@ const MainWindow = ({
   onCloseDialog: () => void
   onInspectorToggled: () => void
 }) => {
-  const [count, setCount] = useState(0)
   const [adaptivePreview, setAdaptivePreview] = useState(false)
   const [narrow, setNarrow] = useState(false)
   const toastOverlayRef = useRef<Adw.ToastOverlay | null>(null)
