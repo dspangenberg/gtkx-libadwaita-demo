@@ -2,11 +2,17 @@ import { applicationId } from 'virtual:gtkx-config'
 import type * as Adw from '@gtkx/gi/adw'
 import * as Gtk from '@gtkx/gi/gtk'
 import { AdwAboutDialog } from '@gtkx/jsx/adw'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
+import { generateDebugInfo } from '@/debugInfo.js'
+import { appVersion } from '@/version.js'
 
 const developerName = 'Danny Spangenberg'
 
 export const AppAboutDialog = ({ onClose }: { onClose: () => void }) => {
+  // Read once per dialog: the renderer probe realises a surface, which we do not want to
+  // repeat on every re-render.
+  const debugInfo = useMemo(generateDebugInfo, [])
+
   const addAcknowledgements = useCallback((dialog: Adw.AboutDialog | null) => {
     if (dialog === null) {
       return
@@ -23,7 +29,9 @@ export const AppAboutDialog = ({ onClose }: { onClose: () => void }) => {
       ref={addAcknowledgements}
       applicationName="GTKX Adwaita Demo"
       applicationIcon={applicationId}
-      version="1.11.alpha"
+      version={appVersion}
+      debugInfo={debugInfo}
+      debugInfoFilename="gtkx-adwaita-demo-debug-info.txt"
       developerName={developerName}
       issueUrl="https://github.com/dspangenberg/gtkx-libadwaita-demo/issues"
       copyright={`© 2026 ${developerName}`}
