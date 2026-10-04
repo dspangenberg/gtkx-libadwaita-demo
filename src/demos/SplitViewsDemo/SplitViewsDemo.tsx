@@ -1,6 +1,5 @@
 import * as Adw from '@gtkx/gi/adw'
 import * as GLib from '@gtkx/gi/glib'
-import type * as Gtk from '@gtkx/gi/gtk'
 import {
   AdwBreakpoint,
   AdwDialog,
