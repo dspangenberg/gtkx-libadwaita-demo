@@ -1,42 +1,42 @@
 {
-    "name": "gtkx-libadwaita-demo",
-    "version": "1.11.alpha",
-    "private": true,
-    "description": "A GNOME application built with GTKX",
-    "license": "LGPL-2.1-or-later",
-    "author": "Danny Spangenberg <danny.spangenberg@twiceware.de>",
-    "type": "module",
-    "engines": {
-        "node": ">=26.7.0"
-    },
-    "scripts": {
-        "dev": "gtkx dev",
-        "build": "gtkx build",
-        "codegen": "gtkx codegen",
-        "typecheck": "gtkx codegen && tsc",
-        "start": "node dist/bundle.mjs",
-        "deploy": "gtkx deploy",
-        "test": "vitest run"
-    },
-    "dependencies": {
-        "@gtkx/cairo": "2.0.0-beta.11",
-        "@gtkx/components": "2.0.0-beta.11",
-        "@gtkx/css": "2.0.0-beta.11",
-        "@gtkx/navigation": "2.0.0-beta.11",
-        "@gtkx/react": "2.0.0-beta.11",
-        "@gtkx/runtime": "2.0.0-beta.11",
-        "react": "^19.3.0"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "^2.5.14",
-        "@gtkx/cli": "2.0.0-beta.11",
-        "@gtkx/config": "2.0.0-beta.11",
-        "@gtkx/mcp": "2.0.0-beta.11",
-        "@gtkx/testing": "2.0.0-beta.11",
-        "@types/node": "^26.6.2",
-        "@types/react": "^19.3.0",
-        "typescript": "^6.0.3",
-        "vite": "^8.3.1",
-        "vitest": "^5.0.2"
-    }
+  "name": "gtkx-libadwaita-demo",
+  "version": "1.11.alpha",
+  "private": true,
+  "description": "A GNOME application built with GTKX",
+  "license": "LGPL-2.1-or-later",
+  "author": "Danny Spangenberg <danny.spangenberg@twiceware.de>",
+  "type": "module",
+  "engines": {
+    "node": ">=26.7.0"
+  },
+  "scripts": {
+    "dev": "gtkx dev",
+    "build": "gtkx build",
+    "codegen": "gtkx codegen",
+    "typecheck": "gtkx codegen && tsc",
+    "start": "node dist/bundle.mjs",
+    "deploy": "gtkx deploy",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@gtkx/cairo": "2.0.0-beta.11",
+    "@gtkx/components": "2.0.0-beta.11",
+    "@gtkx/css": "2.0.0-beta.11",
+    "@gtkx/navigation": "2.0.0-beta.11",
+    "@gtkx/react": "2.0.0-beta.11",
+    "@gtkx/runtime": "2.0.0-beta.11",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@gtkx/cli": "2.0.0-beta.11",
+    "@gtkx/config": "2.0.0-beta.11",
+    "@gtkx/mcp": "2.0.0-beta.11",
+    "@gtkx/testing": "2.0.0-beta.11",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  }
 }
