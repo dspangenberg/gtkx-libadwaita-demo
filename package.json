@@ -1,6 +1,6 @@
 {
   "name": "gtkx-libadwaita-demo",
-  "version": "1.11.alpha",
+  "version": "1.11-alpha",
   "private": true,
   "description": "A GNOME application built with GTKX",
   "license": "LGPL-2.1-or-later",
