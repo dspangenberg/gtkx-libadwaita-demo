@@ -16,7 +16,9 @@
     "typecheck": "gtkx codegen && tsc",
     "start": "node dist/bundle.mjs",
     "deploy": "gtkx deploy",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "biome check",
+    "format": "biome check --write"
   },
   "dependencies": {
     "@gtkx/cairo": "2.0.0-beta.11",
