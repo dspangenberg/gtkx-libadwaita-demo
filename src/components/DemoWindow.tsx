@@ -29,6 +29,7 @@ import { BoxedListDemo } from '@/demos/BoxedListDemo.js'
 import { ButtonsDemo } from '@/demos/ButtonsDemo.js'
 import { CarouselDemo } from '@/demos/CarouselDemo.js'
 import { ClampDemo } from '@/demos/ClampDemo.js'
+import { FloatingBarDemo } from '@/demos/FloatingBarDemo.js'
 import { MultiLayoutDemo } from '@/demos/MultiLayoutDemo.js'
 import { NavigationViewDemoPage } from '@/demos/NavigationViewDemo/NavigationViewDemoPage.js'
 import { SpinnerDemo } from '@/demos/SpinnerDemo.js'
@@ -53,6 +54,7 @@ type RouteParams = {
   Buttons: undefined
   Carousel: undefined
   Clamp: undefined
+  FloatingBar: undefined
   MultiLayoutView: undefined
   NavigationView: undefined
   Spinner: undefined
@@ -182,6 +184,7 @@ const Sidebar = ({ navigation }: Pick<DrawerContentProps, 'navigation'>) => {
           <AdwSidebarItem iconName="widget-banner-symbolic" title="Banner" />
           <AdwSidebarItem iconName="widget-toast-symbolic" title="Toasts" />
           <AdwSidebarItem iconName="process-working-symbolic" title="Spinner" />
+          <AdwSidebarItem iconName="format-justify-fill-symbolic" title="Floating Bar" />
           <AdwSidebarItem iconName="adw-avatar-symbolic" title="Avatar" />
         </AdwSidebarSection>
         <AdwSidebarSection title="Dialogs">
@@ -243,6 +246,7 @@ export const Navigation = ({ collapsed = false }: { collapsed?: boolean }) => {
         <Drawer.Screen name="Buttons" component={ButtonsDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="Carousel" component={CarouselDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="Clamp" component={ClampDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="FloatingBar" component={FloatingBarDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ header: demoHeader }} />
         <Drawer.Screen name="SplitViews" component={SplitViewsDemoPage} options={{ header: demoHeader }} />

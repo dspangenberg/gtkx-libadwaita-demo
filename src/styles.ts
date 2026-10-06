@@ -42,3 +42,23 @@ injectGlobal`
     padding: 6px;
   }
 `
+  .floating-bar {
+    padding: 3px;
+    background-color: var(--view-bg-color, var(--window-bg-color));
+    box-shadow: inset 0 100px 0 0 color-mix(in srgb, currentColor 10%, transparent);
+    border-radius: 12px;
+  }
+
+  .floating-bar:backdrop {
+    background-color: var(--window-bg-color);
+  }
+
+  .floating-bar button {
+    padding: 0px;
+  }
+
+  .file-row.selected {
+    background-color: color-mix(in srgb, var(--accent-color) 25%, transparent);
+  }
+
+`
