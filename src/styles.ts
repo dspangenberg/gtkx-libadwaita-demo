@@ -41,7 +41,7 @@ injectGlobal`
     min-height: 0;
     padding: 6px;
   }
-`
+
   .floating-bar {
     padding: 3px;
     background-color: var(--view-bg-color, var(--window-bg-color));
@@ -61,4 +61,8 @@ injectGlobal`
     background-color: color-mix(in srgb, var(--accent-color) 25%, transparent);
   }
 
+  .drop-highlight {
+    background-color: color-mix(in srgb, var(--accent-color) 12%, transparent);
+    border-radius: 12px;
+  }
 `

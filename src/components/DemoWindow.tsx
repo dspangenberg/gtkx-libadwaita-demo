@@ -29,6 +29,7 @@ import { BoxedListDemo } from '@/demos/BoxedListDemo.js'
 import { ButtonsDemo } from '@/demos/ButtonsDemo.js'
 import { CarouselDemo } from '@/demos/CarouselDemo.js'
 import { ClampDemo } from '@/demos/ClampDemo.js'
+import { DragDropDemo } from '@/demos/DragDropDemo.js'
 import { FloatingBarDemo } from '@/demos/FloatingBarDemo.js'
 import { MultiLayoutDemo } from '@/demos/MultiLayoutDemo.js'
 import { NavigationViewDemoPage } from '@/demos/NavigationViewDemo/NavigationViewDemoPage.js'
@@ -54,6 +55,7 @@ type RouteParams = {
   Buttons: undefined
   Carousel: undefined
   Clamp: undefined
+  DragAndDrop: undefined
   FloatingBar: undefined
   MultiLayoutView: undefined
   NavigationView: undefined
@@ -199,6 +201,7 @@ const Sidebar = ({ navigation }: Pick<DrawerContentProps, 'navigation'>) => {
         <AdwSidebarSection title="Miscellaneous">
           <AdwSidebarItem iconName="style-classes-symbolic" title="Style Classes" />
           <AdwSidebarItem iconName="animations-symbolic" title="Animations" />
+          <AdwSidebarItem iconName="edit-copy-symbolic" title="Drag and Drop" />
         </AdwSidebarSection>
       </AdwSidebar>
     </AdwToolbarView>
@@ -246,6 +249,7 @@ export const Navigation = ({ collapsed = false }: { collapsed?: boolean }) => {
         <Drawer.Screen name="Buttons" component={ButtonsDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="Carousel" component={CarouselDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="Clamp" component={ClampDemo} options={{ header: demoHeader }} />
+        <Drawer.Screen name="DragAndDrop" component={DragDropDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="FloatingBar" component={FloatingBarDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="MultiLayoutView" component={MultiLayoutDemo} options={{ header: demoHeader }} />
         <Drawer.Screen name="NavigationView" component={NavigationViewDemoPage} options={{ header: demoHeader }} />
