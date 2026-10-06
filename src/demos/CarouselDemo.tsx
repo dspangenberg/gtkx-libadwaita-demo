@@ -12,7 +12,7 @@ import {
   AdwSwitchRow
 } from '@gtkx/jsx/adw'
 import { GtkBox, GtkButton, GtkStack, GtkStackPage, GtkStringList } from '@gtkx/jsx/gtk'
-import { typeFromName } from '@gtkx/runtime'
+import { peekTypeClass, typeFromName } from '@gtkx/runtime'
 import { useState } from 'react'
 
 const indicatorNames = ['Dots', 'Lines']
@@ -28,7 +28,13 @@ export const CarouselDemo = () => {
   const [longSwipes, setLongSwipes] = useState(false)
 
   // GObjects erst nach Gtk.init() erzeugen, aber über Renders hinweg stabil halten.
-  const [orientationType] = useState(() => typeFromName('GtkOrientation'))
+  const [orientationType] = useState(() => {
+    // GtkOrientation's GType is registered lazily when a class using it is initialized.
+    // Without the guard typeFromName returns G_TYPE_INVALID, which segfaults in
+    // adw_enum_list_model_new().
+    peekTypeClass(Gtk.Box)
+    return typeFromName('GtkOrientation')
+  })
   const [orientationLabel] = useState(() => Gtk.PropertyExpression.new(Adw.EnumListItem, null, 'nick'))
 
   const scrollToPage = (index: number) => {
